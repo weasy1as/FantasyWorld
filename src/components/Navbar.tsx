@@ -2,7 +2,7 @@ import React from "react";
 
 const Navbar = () => {
   return (
-    <div className="w-full h-16 bg-gray-800 text-white flex items-center px-8">
+    <div className="w-full h-16 bg-[#191022] border-b border-gray-700 text-white flex items-center px-8">
       <h1 className="text-xl font-bold">Fantasy World</h1>
       <nav className="ml-auto">
         <a href="/" className="mx-4 hover:underline">

@@ -1,7 +1,12 @@
 import { supabase } from "@/lib/supabase";
 
-export async function GET() {
-  const { data, error } = await supabase
+export async function GET(req: Request) {
+  // Parse query parameters
+  const url = new URL(req.url);
+  const teamId = url.searchParams.get("team_id"); // reads ?team_id=123
+
+  // Build Supabase query
+  let query = supabase
     .from("fixtures")
     .select(
       `
@@ -21,23 +26,17 @@ export async function GET() {
     )
     .order("kickoff_time", { ascending: true });
 
-  if (error || !data) {
-    return new Response(
-      JSON.stringify({ error: error?.message || "No fixtures found" }),
-      { status: 500 }
-    );
+  if (teamId) {
+    query = query.or(`team_h.eq.${teamId},team_a.eq.${teamId}`);
   }
 
-  // Group by gameweek
-  const grouped = data.reduce((acc: Record<number, any[]>, fixture) => {
-    const gw = fixture.gameweek;
-    if (!acc[gw]) acc[gw] = [];
-    acc[gw].push(fixture);
-    return acc;
-  }, {});
+  const { data, error } = await query;
 
-  return new Response(JSON.stringify(grouped), {
-    status: 200,
-    headers: { "Content-Type": "application/json" },
-  });
+  if (error) {
+    return new Response(JSON.stringify({ error: error.message }), {
+      status: 500,
+    });
+  }
+
+  return new Response(JSON.stringify(data), { status: 200 });
 }
