@@ -3,6 +3,7 @@ import { supabase } from "@/lib/supabase";
 export async function GET(request: Request) {
   const url = new URL(request.url);
   const search = url.searchParams.get("search"); // get search param
+  const teamId = url.searchParams.get("teamId");
 
   // Base query: select all players with team info
   let query = supabase.from("players").select("*, team:teams(*)");
@@ -12,6 +13,10 @@ export async function GET(request: Request) {
     query = query.or(
       `first_name.ilike.%${search}%,second_name.ilike.%${search}%`
     );
+  }
+  if (teamId) {
+    // If teamId exists, filter by teamId
+    query = query.eq("team_id", teamId);
   }
 
   const { data: players, error } = await query;

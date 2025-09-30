@@ -141,7 +141,7 @@ const page = () => {
     <div className="flex gap-6 p-8">
       {/* Player card on the left */}
       <div className="flex-1 w-1/3">
-        <PlayerCard player={player} stats={stats} />
+        <PlayerCard player={player} stats={stats} showStats={true} />
       </div>
 
       {/* Fixtures on the right */}

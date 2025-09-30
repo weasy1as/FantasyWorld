@@ -27,16 +27,23 @@ type AggregatedStats = {
 export default function PlayerCard({
   player,
   stats,
+  showStats,
 }: {
   player: Player | null;
   stats: AggregatedStats | null;
+  showStats: boolean;
 }) {
   if (!player) return null;
 
   return (
     <div className="w-full rounded-2xl overflow-hidden shadow-xl border border-gray-200">
       {/* Header Section */}
-      <div className="bg-red-600 px-4 pt-4 relative h-full">
+      <div
+        className="bg-blue-300 px-4 pt-4 h-auto relative cursor-pointer"
+        onClick={() => {
+          window.location.href = `/player/${player.id}`;
+        }}
+      >
         <div className="flex items-center gap-3">
           <Image
             src={player.photo_url}
@@ -74,47 +81,51 @@ export default function PlayerCard({
       </div>
 
       {/* Stats Section */}
-      <div className="p-6 grid grid-cols-3 gap-4 text-sm">
-        <div>
-          <p className="text-gray-500">Appearances</p>
-          <p className="font-medium">{stats?.appearances}</p>
+      {showStats && (
+        <div className="p-6 grid grid-cols-3 gap-4 text-sm">
+          <div>
+            <p className="text-gray-500">Appearances</p>
+            <p className="font-medium">{stats?.appearances}</p>
+          </div>
+          <div>
+            <p className="text-gray-500">Goals</p>
+            <p className="font-medium">{stats?.goals}</p>
+          </div>
+          <div>
+            <p className="text-gray-500">Assists</p>
+            <p className="font-medium">{stats?.assists}</p>
+          </div>
+          <div>
+            <p className="text-gray-500">Clean Sheets</p>
+            <p className="font-medium">{stats?.cleanSheets}</p>
+          </div>
+          <div>
+            <p className="text-gray-500">Yellow Cards</p>
+            <p className="font-medium">{stats?.yellowCards}</p>
+          </div>
+          <div>
+            <p className="text-gray-500">Red Cards</p>
+            <p className="font-medium">{stats?.redCards}</p>
+          </div>
+          <div>
+            <p className="text-gray-500">Total Points</p>
+            <p className="font-medium">{stats?.totalPoints}</p>
+          </div>
+          <div>
+            <p className="text-gray-500">Minutes Played</p>
+            <p className="font-medium">{stats?.minutes}</p>
+          </div>
         </div>
-        <div>
-          <p className="text-gray-500">Goals</p>
-          <p className="font-medium">{stats?.goals}</p>
-        </div>
-        <div>
-          <p className="text-gray-500">Assists</p>
-          <p className="font-medium">{stats?.assists}</p>
-        </div>
-        <div>
-          <p className="text-gray-500">Clean Sheets</p>
-          <p className="font-medium">{stats?.cleanSheets}</p>
-        </div>
-        <div>
-          <p className="text-gray-500">Yellow Cards</p>
-          <p className="font-medium">{stats?.yellowCards}</p>
-        </div>
-        <div>
-          <p className="text-gray-500">Red Cards</p>
-          <p className="font-medium">{stats?.redCards}</p>
-        </div>
-        <div>
-          <p className="text-gray-500">Total Points</p>
-          <p className="font-medium">{stats?.totalPoints}</p>
-        </div>
-        <div>
-          <p className="text-gray-500">Minutes Played</p>
-          <p className="font-medium">{stats?.minutes}</p>
-        </div>
-      </div>
+      )}
 
       {/* Footer */}
-      <div className="bg-gray-100 p-4 text-center">
-        <button className="text-sm font-semibold text-white px-4 py-2 rounded-xl  bg-[#080808] cursor-pointer hover:bg-gray-800 hover:scale-110 transition ease-in-out">
-          Ai insights
-        </button>
-      </div>
+      {showStats && (
+        <div className="bg-gray-100 p-4 text-center">
+          <button className="text-sm font-semibold text-white px-4 py-2 rounded-xl  bg-[#080808] cursor-pointer hover:bg-gray-800 hover:scale-110 transition ease-in-out">
+            Ai insights
+          </button>
+        </div>
+      )}
     </div>
   );
 }
