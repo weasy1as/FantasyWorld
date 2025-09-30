@@ -1,4 +1,7 @@
 "use client";
+import FixtureCard from "@/components/fixtureCard";
+import PlayerCard from "@/components/PLayerCard";
+import { get } from "http";
 import { useParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
@@ -31,9 +34,70 @@ type Fixture = {
   away_team: Team;
 };
 
+type PlayerStat = {
+  id: number;
+  player_id: number;
+  fixture_id: number;
+  total_points: number;
+  minutes: number;
+  goals_scored: number;
+  assists: number;
+  clean_sheets: number;
+  goals_conceded: number | null;
+  yellow_cards: number;
+  red_cards: number;
+  influence: number;
+  creativity: number;
+  threat: number;
+  ict_index: number;
+  expected_goals: number;
+  expected_assists: number;
+  expected_goal_involvements: number;
+  expected_goals_conceded: number;
+  created_at: string;
+};
+
+type AggregatedStats = {
+  appearances: number;
+  goals: number;
+  assists: number;
+  cleanSheets: number;
+  yellowCards: number;
+  redCards: number;
+  totalPoints: number;
+  minutes: number;
+};
+function getAggregatedStats(stats: PlayerStat[]) {
+  return stats.reduce(
+    (acc, s) => {
+      acc.appearances += s.minutes > 0 ? 1 : 0;
+      acc.goals += s.goals_scored;
+      acc.assists += s.assists;
+      acc.cleanSheets += s.clean_sheets;
+      acc.yellowCards += s.yellow_cards;
+      acc.redCards += s.red_cards;
+      acc.totalPoints += s.total_points;
+      acc.minutes += s.minutes;
+      return acc;
+    },
+    {
+      appearances: 0,
+      goals: 0,
+      assists: 0,
+      cleanSheets: 0,
+      yellowCards: 0,
+      redCards: 0,
+      totalPoints: 0,
+      minutes: 0,
+    }
+  );
+}
+
 const page = () => {
   const [player, setPlayer] = React.useState<Player | null>(null);
   const [fixtures, setFixtures] = useState<Fixture[]>([]);
+  const [stats, setStats] = useState<AggregatedStats | null>(null);
+  const [playerHistory, setPlayerHistory] = useState<PlayerStat[]>([]);
   const params = useParams();
   const playerId = params.playerId;
 
@@ -43,12 +107,20 @@ const page = () => {
     setPlayer(data);
     console.log(data);
   };
-  // Fetch fixtures filtered by player's team
-  const fetchFixtures = async (teamId: number) => {
-    const res = await fetch(`/api/fixtures?team_id=${teamId}`);
+
+  const fetchStatsAndFixtures = async () => {
+    const res = await fetch(`/api/playerHistory/${playerId}`);
     const data = await res.json();
-    const fixturesArray: Fixture[] = Object.values(data).flat();
-    setFixtures(fixturesArray);
+
+    // aggregate stats
+    setStats(getAggregatedStats(data));
+    setPlayerHistory(data);
+
+    // extract fixtures from history
+    const extractedFixtures = data
+      .map((h: any) => h.fixture)
+      .filter((f: any) => f != null);
+    setFixtures(extractedFixtures);
   };
 
   useEffect(() => {
@@ -58,140 +130,41 @@ const page = () => {
     loadData();
   }, [playerId]);
 
-  // Once player is loaded, fetch fixtures
   useEffect(() => {
-    if (player?.team.id) {
-      fetchFixtures(player.team.id);
-    }
-  }, [player, player?.team.id]);
-
-  const lastMatch = fixtures
-    .filter((f) => f.finished)
-    .sort(
-      (a, b) =>
-        new Date(b.kickoff_time).getTime() - new Date(a.kickoff_time).getTime()
-    )[0];
-
-  const upcomingMatches = fixtures
-    .filter((f) => !f.finished)
-    .sort(
-      (a, b) =>
-        new Date(a.kickoff_time).getTime() - new Date(b.kickoff_time).getTime()
-    );
+    const fetchStatsAndFixturesData = async () => {
+      await fetchStatsAndFixtures(); // this function should use player.team.id
+    };
+    fetchStatsAndFixturesData();
+  }, [playerId]);
 
   return (
-    <div className="p-8 flex flex-col  w-full">
-      <div className="mb-8 flex gap-8">
-        {" "}
-        <div className="bg-blue-300 p-4 w-[800px] rounded-xl shadow-md flex items-center gap-4 hover:shadow-lg transition cursor-pointer">
-          <img
-            src={player?.photo_url}
-            alt={player?.web_name}
-            className="w-62 h-62 object-contain"
-          />
-          <div className="flex flex-col ">
-            <span className="text-black text-xl">{player?.first_name}</span>
-            <span className="text-black text-4xl font-bold">
-              {player?.second_name}
-            </span>
-            <div className="flex items-center gap-4 mt-2">
-              <div className="flex items-center gap-2">
-                <img
-                  className="w-8 h-8 object-contain"
-                  src={player?.team.logo_url}
-                  alt={player?.team.short_name}
-                />
-                <span className="text-black text-md">
-                  {player?.team.short_name}
-                </span>
-              </div>
-              <span className="text-black text-md">
-                {player?.position === 1
-                  ? "Goalkeeper"
-                  : player?.position === 2
-                  ? "Defender"
-                  : player?.position === 3
-                  ? "Midfielder"
-                  : "Forward"}
-              </span>
+    <div className="flex gap-6 p-8">
+      {/* Player card on the left */}
+      <div className="flex-1 w-1/3">
+        <PlayerCard player={player} stats={stats} />
+      </div>
+
+      {/* Fixtures on the right */}
+      <div className="flex-1">
+        <div>
+          {fixtures.length > 0 && (
+            <div className="mb-8">
+              <h1 className="text-xl font-bold mb-4">Recent Game</h1>
+              <FixtureCard
+                fixture={fixtures[0]}
+                playerHistory={playerHistory}
+              />
             </div>
-          </div>
+          )}
         </div>
-        {/* Fixtures */}
-        <div className="flex flex-col gap-6 w-full md:w-1/3">
-          {/* Last Match */}
-          <div className="flex flex-col justify-center bg-white shadow-md p-4 rounded-lg w-full">
-            <h2 className="font-bold text-lg mb-2">Last Match</h2>
-            {lastMatch ? (
-              <div className="flex items-center ">
-                <div className="flex items-center gap-2 ">
-                  {/* Home Team */}
-                  <div className="flex items-center gap-2">
-                    <img
-                      src={lastMatch.home_team.logo_url}
-                      className="w-6 h-6"
-                      alt={lastMatch.home_team.short_name}
-                    />
-                    <span className="font-medium">
-                      {lastMatch.home_team.short_name}
-                    </span>
-                  </div>
-
-                  {/* Score & Kickoff Time */}
-                  <div className="flex flex-col items-center">
-                    <span className="font-bold">
-                      {lastMatch.team_h_score} - {lastMatch.team_a_score}
-                    </span>
-                    <span className="text-gray-500 text-xs">
-                      {new Date(lastMatch.kickoff_time).toLocaleString()}
-                    </span>
-                  </div>
-
-                  {/* Away Team */}
-                  <div className="flex items-center gap-2">
-                    <span className="font-medium">
-                      {lastMatch.away_team.short_name}
-                    </span>
-                    <img
-                      src={lastMatch.away_team.logo_url}
-                      className="w-6 h-6"
-                      alt={lastMatch.away_team.short_name}
-                    />
-                  </div>
-                </div>
-              </div>
-            ) : (
-              <p className="text-gray-500">No finished matches yet</p>
-            )}
-          </div>
-
-          {/* Upcoming Fixtures */}
-          <div className="bg-white shadow-md p-4 rounded-lg">
-            <h2 className="font-bold text-lg mb-2">Upcoming Matches</h2>
-
-            <div className="max-h-64 overflow-y-auto">
-              {upcomingMatches.length > 0 ? (
-                upcomingMatches.map((f) => (
-                  <div
-                    key={f.id}
-                    className="flex items-center justify-between mb-2"
-                  >
-                    <div className="flex items-center gap-2">
-                      <img src={f.home_team.logo_url} className="w-6 h-6" />
-                      <span>{f.home_team.short_name}</span>
-                    </div>
-                    <span>vs</span>
-                    <div className="flex items-center gap-2">
-                      <span>{f.away_team.short_name}</span>
-                      <img src={f.away_team.logo_url} className="w-6 h-6" />
-                    </div>
-                  </div>
-                ))
-              ) : (
-                <p className="text-gray-500">No upcoming matches</p>
-              )}
-            </div>
-          </div>
+        <div className="flex flex-col gap-6 overflow-y-scroll pb-4 h-[80vh]">
+          {fixtures.slice(1).map((fixture) => (
+            <FixtureCard
+              key={fixture.id}
+              fixture={fixture}
+              playerHistory={playerHistory}
+            />
+          ))}
         </div>
       </div>
     </div>
