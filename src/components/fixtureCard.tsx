@@ -3,13 +3,19 @@ import React from "react";
 const FixtureCard = ({
   fixture,
   playerHistory,
+  recent = false,
 }: {
   fixture: any;
   playerHistory: any;
+  recent?: boolean;
 }) => {
   const stats = playerHistory?.find((h: any) => h.fixture.id === fixture.id);
   return (
-    <div className="bg-white rounded-2xl shadow-md border border-gray-200 p-6 flex flex-col items-center text-center">
+    <div
+      className={`bg-white ${
+        recent ? "ring-2 ring-blue-500" : ""
+      } rounded-2xl shadow-md border border-gray-200 p-6 flex flex-col items-center text-center`}
+    >
       <h2 className="text-lg font-bold mb-2">Gameweek {fixture.gameweek}</h2>
 
       <div className="flex items-center justify-between w-full mb-4">

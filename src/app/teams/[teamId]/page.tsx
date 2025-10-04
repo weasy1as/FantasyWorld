@@ -54,6 +54,7 @@ const TeamPage = () => {
                 key={player.id}
                 player={player}
                 stats={player.aggregated_stats}
+                showStats={false}
               />
             ))}
           </div>

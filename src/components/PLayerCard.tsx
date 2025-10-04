@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { FaUserAlt } from "react-icons/fa";
 type Player = {
   id: number;
   first_name: string;
@@ -45,13 +46,32 @@ export default function PlayerCard({
         }}
       >
         <div className="flex items-center gap-3">
-          <Image
-            src={player.photo_url}
-            alt={`${player.first_name} ${player.second_name}`}
-            width={110}
-            height={110}
-            className=""
-          />
+          {player.photo_url ? (
+            <Image
+              src={player.photo_url}
+              alt={player.web_name}
+              height={110}
+              width={110}
+              onError={(e) => {
+                // fallback to placeholder if image fails
+                e.currentTarget.style.display = "none";
+                e.currentTarget.insertAdjacentHTML(
+                  "afterend",
+                  `<div class='flex items-center justify-center w-20 h-20 rounded-full bg-gray-200'>
+                 <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-gray-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                   <path d="M12 12c2.7 0 5-2.3 5-5s-2.3-5-5-5-5 2.3-5 5 2.3 5 5 5z" />
+                   <path d="M4 20c0-4 4-7 8-7s8 3 8 7" />
+                 </svg>
+               </div>`
+                );
+              }}
+            />
+          ) : (
+            <div className="flex items-center justify-center w-20 h-20 rounded-full bg-gray-200">
+              <FaUserAlt className="w-10 h-10 text-gray-500" />
+            </div>
+          )}
+
           <div className="flex flex-col  text-white">
             <h2 className="text-lg font-medium">{player.first_name}</h2>
             <h1 className="text-2xl font-bold leading-tight">

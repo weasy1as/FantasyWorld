@@ -153,6 +153,7 @@ const page = () => {
               <FixtureCard
                 fixture={fixtures[0]}
                 playerHistory={playerHistory}
+                recent={true}
               />
             </div>
           )}
