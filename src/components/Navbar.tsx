@@ -1,19 +1,29 @@
+import Link from "next/link";
 import React from "react";
+import { SiPremierleague } from "react-icons/si";
 
 const Navbar = () => {
   return (
     <div className="w-full h-16 bg-[#191022] border-b border-gray-700 text-white flex items-center px-8">
-      <h1 className="text-xl font-bold">Fantasy World</h1>
+      <Link
+        href="/"
+        className="hidden md:block text-xl font-bold cursor-pointer"
+      >
+        Fantasy World
+      </Link>
+      <Link href="/" className="md:hidden ml-2 text-white">
+        <SiPremierleague size={32} className="md:hidden ml-2 text-white" />
+      </Link>
       <nav className="ml-auto">
-        <a href="/" className="mx-4 hover:underline">
+        <Link href="/" className="mx-4 hover:underline">
           Home
-        </a>
-        <a href="/teams" className="mx-4 hover:underline">
+        </Link>
+        <Link href="/teams" className="mx-4 hover:underline">
           Teams
-        </a>
-        <a href="/fixtures" className="mx-4 hover:underline">
+        </Link>
+        <Link href="/fixtures" className="mx-4 hover:underline">
           Fixtures
-        </a>
+        </Link>
       </nav>
     </div>
   );

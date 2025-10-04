@@ -78,7 +78,7 @@ export default function PlayerCard({
               {player.second_name}
             </h1>
             <div className="flex gap-3 text-sm mt-1">
-              <div className="flex gap-2">
+              <div className="flex flex-col md:flex-row items-center pb-2 gap-2">
                 <img
                   className="w-8 h-8"
                   src={player.team.logo_url}

@@ -138,14 +138,14 @@ const page = () => {
   }, [playerId]);
 
   return (
-    <div className="flex gap-6 p-8">
+    <div className="flex flex-col md:flex-row gap-6 p-8">
       {/* Player card on the left */}
-      <div className="flex-1 w-1/3">
+      <div className="md:flex-1 md:w-1/3 w-full">
         <PlayerCard player={player} stats={stats} showStats={true} />
       </div>
 
       {/* Fixtures on the right */}
-      <div className="flex-1">
+      <div className="md:flex-1">
         <div>
           {fixtures.length > 0 && (
             <div className="mb-8">
@@ -157,6 +157,12 @@ const page = () => {
               />
             </div>
           )}
+        </div>
+        <div className="relative flex items-center justify-center mb-6">
+          <div className="w-full border-t border-gray-300"></div>
+          <span className="absolute px-4 bg-white text-gray-500 text-sm">
+            Previous Games
+          </span>
         </div>
         <div className="flex flex-col gap-6 overflow-y-scroll pb-4 h-[80vh]">
           {fixtures.slice(1).map((fixture) => (

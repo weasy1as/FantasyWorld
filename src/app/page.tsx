@@ -46,7 +46,7 @@ export default function Home() {
     <div className="min-h-screen bg-[#191022]">
       <header className="flex flex-col justify-center items-center text-center space-y-4 py-12 text-white">
         <h1 className="text-4xl font-bold mb-2">FPL player analysis</h1>
-        <p className="text-lg text-gray-400 w-md dark:text-gray-400 max-w-2xl">
+        <p className="text-lg text-gray-400 w-sm md:w-md dark:text-gray-400 max-w-2xl">
           Track and compare Fantasy Premier League players with AI-driven
           insights. Analyze player performance, statistics, and trends to make
           informed decisions for your team.

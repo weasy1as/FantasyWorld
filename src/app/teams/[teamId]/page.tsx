@@ -1,5 +1,6 @@
 "use client";
 import PlayerCard from "@/components/PLayerCard";
+import Image from "next/image";
 import { useParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
@@ -34,12 +35,8 @@ const TeamPage = () => {
       {team && (
         <div className="mb-8">
           {/* Team Header */}
-          <div className="flex items-center gap-6 mb-6">
-            <img
-              src={team.logo_url}
-              alt={team.name}
-              className="w-24 h-24 rounded-full border p-2 bg-white shadow"
-            />
+          <div className="flex items-center justify-center gap-6 mb-6">
+            <Image src={team.logo_url} alt={team.name} width={80} height={80} />
             <div>
               <h1 className="text-3xl font-bold">{team.name}</h1>
               <p className="text-gray-500 text-lg">{team.short_name}</p>
