@@ -78,7 +78,7 @@ const FixturesPage = () => {
           <h2 className="text-xl font-semibold mb-2 text-center">
             Gameweek {currentGroup.gameweek}
           </h2>
-          <ul className="mb-8">
+          <ul className="mb-8 w-full grid md:grid-cols-2 grid-cols-1 gap-2">
             {currentGroup.fixtures.map((fixture) => {
               const kickoff = new Date(fixture.kickoff_time);
               const now = new Date();
