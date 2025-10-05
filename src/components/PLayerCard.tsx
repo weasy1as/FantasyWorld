@@ -29,10 +29,16 @@ export default function PlayerCard({
   player,
   stats,
   showStats,
+  onInsightsClick,
+  aiData,
+  loading,
 }: {
   player: Player | null;
   stats: AggregatedStats | null;
   showStats: boolean;
+  onInsightsClick?: (player: Player) => void;
+  aiData?: { recommendation: string; reasoning: string };
+  loading?: boolean;
 }) {
   if (!player) return null;
 
@@ -141,9 +147,38 @@ export default function PlayerCard({
       {/* Footer */}
       {showStats && (
         <div className="bg-gray-100 p-4 text-center">
-          <button className="text-sm font-semibold text-white px-4 py-2 rounded-xl  bg-[#080808] cursor-pointer hover:bg-gray-800 hover:scale-110 transition ease-in-out">
-            Ai insights
-          </button>
+          {!aiData ? (
+            <button
+              className="text-sm font-semibold text-white px-4 py-2 rounded-xl bg-[#080808] cursor-pointer hover:bg-gray-800 hover:scale-110 transition ease-in-out"
+              onClick={() => onInsightsClick && onInsightsClick(player)}
+              disabled={loading}
+            >
+              {loading ? "Getting Insights..." : "Get AI Insights"}
+            </button>
+          ) : (
+            <div className="bg-white rounded-xl p-6 shadow-lg space-y-4">
+              <h3 className="font-bold text-lg text-gray-800">AI Insights</h3>
+
+              {/* Recommendation Badge */}
+              <div
+                className={`inline-block px-4 py-2 rounded-full font-semibold text-white ${
+                  aiData?.recommendation === "Buy"
+                    ? "bg-green-500"
+                    : aiData?.recommendation === "Sell" ||
+                      aiData?.recommendation === "Avoid"
+                    ? "bg-red-500"
+                    : aiData?.recommendation === "Shortlist"
+                    ? "bg-yellow-500 text-black"
+                    : "bg-gray-400"
+                }`}
+              >
+                {aiData?.recommendation}
+              </div>
+
+              {/* Reasoning */}
+              <p className="text-gray-700">{aiData?.reasoning}</p>
+            </div>
+          )}
         </div>
       )}
     </div>

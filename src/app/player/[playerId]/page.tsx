@@ -98,6 +98,8 @@ const page = () => {
   const [fixtures, setFixtures] = useState<Fixture[]>([]);
   const [stats, setStats] = useState<AggregatedStats | null>(null);
   const [playerHistory, setPlayerHistory] = useState<PlayerStat[]>([]);
+  const [aiData, setAiData] = useState<any>(null);
+  const [loading, setLoading] = useState(false);
   const params = useParams();
   const playerId = params.playerId;
 
@@ -136,12 +138,74 @@ const page = () => {
     };
     fetchStatsAndFixturesData();
   }, [playerId]);
+  const handleAiInsights = async (player: Player) => {
+    if (!stats || playerHistory.length === 0) return;
+
+    // Prepare last 5 games
+    const last5Games = playerHistory.slice(-5); // last 5 fixtures
+
+    // Build payload with aggregated stats, advanced metrics, and recent form
+    const payload = {
+      player,
+      stats: {
+        ...stats,
+        expectedGoals: last5Games.reduce(
+          (sum, g) => sum + (g.expected_goals || 0),
+          0
+        ),
+        expectedAssists: last5Games.reduce(
+          (sum, g) => sum + (g.expected_assists || 0),
+          0
+        ),
+        influence: last5Games.reduce((sum, g) => sum + (g.influence || 0), 0),
+        creativity: last5Games.reduce((sum, g) => sum + (g.creativity || 0), 0),
+        threat: last5Games.reduce((sum, g) => sum + (g.threat || 0), 0),
+      },
+      history: last5Games, // include raw stats for recent form
+    };
+
+    try {
+      const res = await fetch("/api/ai-Insight", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      setLoading(true);
+
+      const data = await res.json();
+      console.log("AI Insights:", payload);
+      console.log(data);
+      let insightObj;
+      if (data.cached) {
+        try {
+          insightObj = JSON.parse(data.insight);
+        } catch (err) {
+          console.error("Failed to parse cached insight:", err);
+          insightObj = { recommendation: "Unknown", reasoning: data.insight };
+        }
+      } else {
+        insightObj = data.insight; // GPT response is already an object
+      }
+      setAiData(insightObj);
+    } catch (error) {
+      console.error("Error fetching AI Insights:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="flex flex-col md:flex-row gap-6 p-8">
       {/* Player card on the left */}
       <div className="md:flex-1 md:w-1/3 w-full">
-        <PlayerCard player={player} stats={stats} showStats={true} />
+        <PlayerCard
+          player={player}
+          stats={stats}
+          showStats={true}
+          onInsightsClick={handleAiInsights}
+          aiData={aiData}
+          loading={loading}
+        />
       </div>
 
       {/* Fixtures on the right */}
