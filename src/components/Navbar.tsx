@@ -15,14 +15,17 @@ const Navbar = () => {
         <SiPremierleague size={32} className="md:hidden ml-2 text-white" />
       </Link>
       <nav className="ml-auto">
-        <Link href="/" className="mx-4 hover:underline">
+        <Link href="/" className="mx-4 hover:underline font-semibold">
           Home
         </Link>
-        <Link href="/teams" className="mx-4 hover:underline">
+        <Link href="/teams" className="mx-4 hover:underline font-semibold">
           Teams
         </Link>
-        <Link href="/fixtures" className="mx-4 hover:underline">
+        <Link href="/fixtures" className="mx-4 hover:underline font-semibold">
           Fixtures
+        </Link>
+        <Link href="/compare" className="mx-4 hover:underline font-semibold">
+          Compare players
         </Link>
       </nav>
     </div>

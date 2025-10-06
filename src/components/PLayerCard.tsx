@@ -1,30 +1,7 @@
 import Image from "next/image";
 import { FaUserAlt } from "react-icons/fa";
-type Player = {
-  id: number;
-  first_name: string;
-  second_name: string;
-  web_name: string;
-  position: number;
-  photo_url: string;
-  team: Team;
-};
-type Team = {
-  id: number;
-  short_name: string;
-  logo_url: string;
-  name: string;
-};
-type AggregatedStats = {
-  appearances: number;
-  goals: number;
-  assists: number;
-  cleanSheets: number;
-  yellowCards: number;
-  redCards: number;
-  totalPoints: number;
-  minutes: number;
-};
+import { AggregatedStats, Player } from "../../types/type";
+
 export default function PlayerCard({
   player,
   stats,
@@ -32,6 +9,7 @@ export default function PlayerCard({
   onInsightsClick,
   aiData,
   loading,
+  comparePage,
 }: {
   player: Player | null;
   stats: AggregatedStats | null;
@@ -39,6 +17,7 @@ export default function PlayerCard({
   onInsightsClick?: (player: Player) => void;
   aiData?: { recommendation: string; reasoning: string };
   loading?: boolean;
+  comparePage?: boolean;
 }) {
   if (!player) return null;
 
@@ -83,7 +62,7 @@ export default function PlayerCard({
             <h1 className="text-2xl font-bold leading-tight">
               {player.second_name}
             </h1>
-            <div className="flex gap-3 text-sm mt-1">
+            <div className="flex flex-col items-center gap-3 text-sm mt-1">
               <div className="flex flex-col md:flex-row items-center pb-2 gap-2">
                 <img
                   className="w-8 h-8"
@@ -92,14 +71,15 @@ export default function PlayerCard({
                 />
                 {player.team.name}
               </div>{" "}
-              •
-              {player.position === 1
-                ? "Goalkeeper"
-                : player.position === 2
-                ? "Defender"
-                : player.position === 3
-                ? "Midfielder"
-                : "Forward"}{" "}
+              {player.position === 1 ? (
+                <p className="font-bold text-xl ">• Goalkeeper</p>
+              ) : player.position === 2 ? (
+                <p className="font-bold text-xl ">• Defender</p>
+              ) : player.position === 3 ? (
+                <p className="font-bold text-xl ">• Midfielder</p>
+              ) : (
+                <p className="font-bold text-xl ">• Forward</p>
+              )}{" "}
             </div>
           </div>
         </div>
@@ -145,11 +125,11 @@ export default function PlayerCard({
       )}
 
       {/* Footer */}
-      {showStats && (
+      {showStats && !comparePage && (
         <div className="bg-gray-100 p-4 text-center">
           {!aiData ? (
             <button
-              className="text-sm font-semibold text-white px-4 py-2 rounded-xl bg-[#080808] cursor-pointer hover:bg-gray-800 hover:scale-110 transition ease-in-out"
+              className="text-sm font-semibold text-white px-4 py-2 rounded-xl bg-gradient-to-r from-blue-500 to-purple-600 cursor-pointer hover:scale-110 transition ease-in-out"
               onClick={() => onInsightsClick && onInsightsClick(player)}
               disabled={loading}
             >

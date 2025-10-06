@@ -1,5 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
+import { SiPremierleague } from "react-icons/si";
 
 type Player = {
   id: number;
@@ -45,12 +46,15 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-[#191022]">
       <header className="flex flex-col justify-center items-center text-center space-y-4 py-12 text-white">
-        <h1 className="text-4xl font-bold mb-2">FPL player analysis</h1>
-        <p className="text-lg text-gray-400 w-sm md:w-md dark:text-gray-400 max-w-2xl">
-          Track and compare Fantasy Premier League players with AI-driven
-          insights. Analyze player performance, statistics, and trends to make
-          informed decisions for your team.
-        </p>
+        <SiPremierleague className=" text-white" size={98} />
+        <div className="">
+          <h1 className="text-4xl font-bold mb-2">FPL player analysis</h1>
+          <p className="text-lg text-gray-400 w-sm md:w-md dark:text-gray-400 max-w-2xl">
+            Track and compare Fantasy Premier League players with AI-driven
+            insights. Analyze player performance, statistics, and trends to make
+            informed decisions for your team.
+          </p>
+        </div>
       </header>
 
       <main className="p-8 max-w-4xl mx-auto">

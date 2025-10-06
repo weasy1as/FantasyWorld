@@ -54,6 +54,14 @@ const FixturesPage = () => {
         .sort((a, b) => a.gameweek - b.gameweek);
 
       setGroupedFixtures(groupedArray);
+
+      const now = new Date();
+      let currentIndex = groupedArray.findIndex((g) =>
+        g.fixtures.some((f) => new Date(f.kickoff_time) >= now)
+      );
+
+      if (currentIndex === -1) currentIndex = groupedArray.length - 1;
+      setPageIndex(currentIndex);
     };
 
     fetchFixtures();
