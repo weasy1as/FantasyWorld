@@ -3,21 +3,22 @@ import PlayerCard from "@/components/PLayerCard";
 import Image from "next/image";
 import { useParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
+import { Player, Team } from "../../../../types/type";
 
 const TeamPage = () => {
   const params = useParams();
   const teamId = params.teamId;
 
-  const [team, setTeam] = useState<any>(null);
-  const [players, setPlayers] = useState<any[]>([]);
+  const [team, setTeam] = useState<Team | null>(null);
+  const [players, setPlayers] = useState<Player[]>([]);
 
-  const fetchTeam = async (id: string) => {
+  const fetchTeam = async (id: string | string[]) => {
     const res = await fetch(`/api/teams?teamId=${id}`);
     const data = await res.json();
     setTeam(data[0]);
   };
 
-  const fetchPlayers = async (id: string) => {
+  const fetchPlayers = async (id: string | string[]) => {
     const res = await fetch(`/api/players?teamId=${id}`);
     const data = await res.json();
     setPlayers(data);
@@ -46,7 +47,7 @@ const TeamPage = () => {
           {/* Players Grid */}
           <h2 className="text-2xl font-semibold mb-4">Players</h2>
           <div className="max-h-7 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {players.map((player: any) => (
+            {players.map((player: Player) => (
               <PlayerCard
                 key={player.id}
                 player={player}

@@ -1,15 +1,17 @@
 import { useEffect, useState } from "react";
+import { Player } from "../../types/type";
+import Image from "next/image";
 
 const PlayerSearch = ({
   label,
   onSelect,
 }: {
   label: string;
-  onSelect: (player: any) => void;
+  onSelect: (player: Player) => void;
 }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(false);
-  const [players, setPlayers] = useState<any[]>([]);
+  const [players, setPlayers] = useState<Player[]>([]);
 
   useEffect(() => {
     if (!searchTerm) {
@@ -56,10 +58,12 @@ const PlayerSearch = ({
                 setSearchTerm(""); // clear search after selecting
               }}
             >
-              <img
+              <Image
                 src={player.photo_url}
                 alt={player.web_name}
                 className="w-16 h-20 object-cover rounded-full"
+                width={64}
+                height={80}
               />
               <div className="flex-1">
                 <h3 className="font-bold text-lg">
@@ -79,10 +83,12 @@ const PlayerSearch = ({
                     : "Forward"}
                 </p>
               </div>
-              <img
+              <Image
                 src={player.team.logo_url}
                 alt={player.team.short_name}
                 className="w-10 h-10 object-contain"
+                width={40}
+                height={40}
               />
             </li>
           ))}

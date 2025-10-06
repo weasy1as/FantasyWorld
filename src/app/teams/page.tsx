@@ -1,4 +1,5 @@
 "use client";
+import Image from "next/image";
 import React, { useEffect, useState } from "react";
 
 type Team = {
@@ -35,10 +36,12 @@ const TeamsPage = () => {
             onClick={() => (window.location.href = `/teams/${team.id}`)}
             className="group cursor-pointer rounded-2xl bg-white shadow-md hover:shadow-xl p-6 flex flex-col items-center transition-transform transform hover:scale-105"
           >
-            <img
+            <Image
               src={team.logo_url}
               alt={team.name}
               className="w-20 h-20 object-contain mb-4 transition-transform group-hover:scale-110"
+              width={80}
+              height={80}
             />
             <h2 className="text-lg font-semibold text-center">{team.name}</h2>
             <p className="text-sm text-gray-500">{team.short_name}</p>

@@ -2,20 +2,7 @@
 import PlayerCard from "@/components/PLayerCard";
 import PlayerSearch from "@/components/playerSearch";
 import React, { useEffect, useState } from "react";
-import { Player } from "../../../types/type";
-
-type PlayerStat = {
-  id: number;
-  player_id: number;
-  fixture_id: number;
-  total_points: number;
-  minutes: number;
-  goals_scored: number;
-  assists: number;
-  clean_sheets: number;
-  yellow_cards: number;
-  red_cards: number;
-};
+import { Player, PlayerStat } from "../../../types/type";
 
 type AggregatedStats = {
   appearances: number;

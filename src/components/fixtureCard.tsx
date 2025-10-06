@@ -1,15 +1,19 @@
 import React from "react";
+import { Fixture, PlayerHistory } from "../../types/type";
+import Image from "next/image";
 
 const FixtureCard = ({
   fixture,
   playerHistory,
   recent = false,
 }: {
-  fixture: any;
-  playerHistory: any;
+  fixture: Fixture;
+  playerHistory: PlayerHistory[];
   recent?: boolean;
 }) => {
-  const stats = playerHistory?.find((h: any) => h.fixture.id === fixture.id);
+  const stats = playerHistory?.find(
+    (h: PlayerHistory) => h.fixture.id === fixture.id
+  );
   return (
     <div
       className={`bg-white ${
@@ -21,10 +25,12 @@ const FixtureCard = ({
       <div className="flex items-center justify-between w-full mb-4">
         {/* Home Team */}
         <div className="flex flex-col items-center">
-          <img
+          <Image
             src={fixture.home_team?.logo_url}
             alt={fixture.home_team?.short_name}
             className="w-12 h-12 mb-2"
+            width={48}
+            height={48}
           />
           <span className="font-semibold">{fixture.home_team?.short_name}</span>
         </div>
@@ -38,10 +44,12 @@ const FixtureCard = ({
 
         {/* Away Team */}
         <div className="flex flex-col items-center">
-          <img
+          <Image
             src={fixture.away_team?.logo_url}
             alt={fixture.away_team?.short_name}
             className="w-12 h-12 mb-2"
+            width={48}
+            height={48}
           />
           <span className="font-semibold">{fixture.away_team?.short_name}</span>
         </div>

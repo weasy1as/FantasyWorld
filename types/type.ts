@@ -6,6 +6,7 @@ export type Player = {
   position: number;
   photo_url: string;
   team: Team;
+  aggregated_stats: AggregatedStats;
 };
 export type Team = {
   id: number;
@@ -60,4 +61,43 @@ export type PlayerStat = {
   expected_goal_involvements: number;
   expected_goals_conceded: number;
   created_at: string;
+};
+
+export type PlayerHistory = {
+  id: number;
+  player_id: number;
+  fixture_id: number;
+  total_points: number;
+  minutes: number;
+  goals_scored: number;
+  assists: number;
+  clean_sheets: number;
+  goals_conceded: number | null;
+  yellow_cards: number;
+  red_cards: number;
+  influence: number;
+  creativity: number;
+  threat: number;
+  ict_index: number;
+  expected_goals: number;
+  expected_assists: number;
+  expected_goal_involvements: number;
+  expected_goals_conceded: number;
+  created_at: string; // ISO date string
+  fixture: Fixture;
+};
+
+export type TopScorer = Player & {
+  total_goals: number;
+};
+
+// Top assist type
+export type TopAssist = Player & {
+  total_assists: number;
+};
+
+// Type for TopStatList item
+export type StatPlayer = Player & {
+  stat_value: number; // e.g., total_goals or total_assists
+  stat_label: string; // "Goals" or "Assists"
 };

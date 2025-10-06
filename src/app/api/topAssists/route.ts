@@ -32,7 +32,9 @@ export async function GET() {
     result.sort((a, b) => b.total_assists - a.total_assists);
 
     return NextResponse.json(result);
-  } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      return NextResponse.json({ error: error.message }, { status: 500 });
+    }
   }
 }

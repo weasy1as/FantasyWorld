@@ -7,6 +7,7 @@ import {
   AggregatedStats,
   Fixture,
   Player,
+  PlayerHistory,
   PlayerStat,
 } from "../../../../types/type";
 
@@ -35,51 +36,48 @@ function getAggregatedStats(stats: PlayerStat[]) {
     }
   );
 }
+type aiDataType = {
+  recommendation: string;
+  reasoning: string;
+};
 
-const page = () => {
-  const [player, setPlayer] = React.useState<Player | null>(null);
+export default function Page() {
+  const [player, setPlayer] = useState<Player | null>(null);
   const [fixtures, setFixtures] = useState<Fixture[]>([]);
   const [stats, setStats] = useState<AggregatedStats | null>(null);
-  const [playerHistory, setPlayerHistory] = useState<PlayerStat[]>([]);
-  const [aiData, setAiData] = useState<any>(null);
+  const [playerHistory, setPlayerHistory] = useState<PlayerHistory[]>([]);
+  const [aiData, setAiData] = useState<aiDataType | null>(null);
   const [loading, setLoading] = useState(false);
   const params = useParams();
   const playerId = params.playerId;
 
-  const fetchPlayer = async () => {
-    const res = await fetch(`/api/players/${playerId}`);
-    const data = await res.json();
-    setPlayer(data);
-    console.log(data);
-  };
-
-  const fetchStatsAndFixtures = async () => {
-    const res = await fetch(`/api/playerHistory/${playerId}`);
-    const data = await res.json();
-
-    // aggregate stats
-    setStats(getAggregatedStats(data));
-    setPlayerHistory(data);
-
-    // extract fixtures from history
-    const extractedFixtures = data
-      .map((h: any) => h.fixture)
-      .filter((f: any) => f != null);
-    setFixtures(extractedFixtures);
-  };
-
   useEffect(() => {
-    const loadData = async () => {
-      await fetchPlayer();
+    const fetchPlayer = async () => {
+      const res = await fetch(`/api/players/${playerId}`);
+      const data = await res.json();
+      setPlayer(data);
+      console.log(data);
     };
-    loadData();
+    fetchPlayer();
   }, [playerId]);
 
   useEffect(() => {
-    const fetchStatsAndFixturesData = async () => {
-      await fetchStatsAndFixtures(); // this function should use player.team.id
+    const fetchStatsAndFixtures = async () => {
+      const res = await fetch(`/api/playerHistory/${playerId}`);
+      const data = await res.json();
+
+      // aggregate stats
+      setStats(getAggregatedStats(data));
+      setPlayerHistory(data);
+
+      // extract fixtures from history
+      const extractedFixtures: Fixture[] = data
+        .map((h: PlayerHistory) => h.fixture)
+        .filter((f: Fixture | null) => f != null);
+      setFixtures(extractedFixtures);
     };
-    fetchStatsAndFixturesData();
+
+    fetchStatsAndFixtures();
   }, [playerId]);
   const handleAiInsights = async (player: Player) => {
     if (!stats || playerHistory.length === 0) return;
@@ -183,6 +181,4 @@ const page = () => {
       </div>
     </div>
   );
-};
-
-export default page;
+}

@@ -15,7 +15,7 @@ export default function PlayerCard({
   stats: AggregatedStats | null;
   showStats: boolean;
   onInsightsClick?: (player: Player) => void;
-  aiData?: { recommendation: string; reasoning: string };
+  aiData?: { recommendation: string; reasoning: string } | null;
   loading?: boolean;
   comparePage?: boolean;
 }) {
@@ -64,10 +64,12 @@ export default function PlayerCard({
             </h1>
             <div className="flex flex-col items-center gap-3 text-sm mt-1">
               <div className="flex flex-col md:flex-row items-center pb-2 gap-2">
-                <img
+                <Image
                   className="w-8 h-8"
                   src={player.team.logo_url}
                   alt={player.team.name}
+                  width={32}
+                  height={32}
                 />
                 {player.team.name}
               </div>{" "}

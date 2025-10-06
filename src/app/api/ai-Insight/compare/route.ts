@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { supabase } from "@/lib/supabase";
+import { PlayerHistory } from "../../../../../types/type";
 
 export async function POST(req: NextRequest) {
   try {
@@ -18,7 +18,7 @@ export async function POST(req: NextRequest) {
       ? history1
           .slice(-5)
           .map(
-            (h: any) =>
+            (h: PlayerHistory) =>
               `GW${h.fixture.gameweek}: ${h.total_points} pts, G:${h.goals_scored}, A:${h.assists}`
           )
           .join("\n")
@@ -28,7 +28,7 @@ export async function POST(req: NextRequest) {
       ? history2
           .slice(-5)
           .map(
-            (h: any) =>
+            (h: PlayerHistory) =>
               `GW${h.fixture.gameweek}: ${h.total_points} pts, G:${h.goals_scored}, A:${h.assists}`
           )
           .join("\n")
@@ -92,7 +92,7 @@ ${recentForm2}`;
     );
 
     const data = await openaiRes.json();
-    let insightRaw = data.choices?.[0]?.message?.content || "";
+    const insightRaw = data.choices?.[0]?.message?.content || "";
 
     let insight;
     try {

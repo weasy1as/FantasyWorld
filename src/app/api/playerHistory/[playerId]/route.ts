@@ -3,9 +3,9 @@ import { NextRequest } from "next/server";
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { playerId: string } }
+  { params }: { params: Promise<{ playerId: string }> }
 ) {
-  const playerId = params.playerId;
+  const { playerId } = await params;
 
   const { data, error } = await supabase
     .from("player_history")

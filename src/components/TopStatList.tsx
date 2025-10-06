@@ -1,3 +1,4 @@
+import Image from "next/image";
 import React from "react";
 
 interface TopStatPlayer {
@@ -5,7 +6,6 @@ interface TopStatPlayer {
   first_name: string;
   second_name: string;
   web_name: string;
-  team_id: number;
   position: number;
   photo_url: string;
   stat_value: number;
@@ -29,16 +29,17 @@ const TopStatList: React.FC<TopStatListProps> = ({ title, players }) => {
               className="bg-white p-4 rounded-xl shadow-md flex items-center gap-4 hover:shadow-lg transition cursor-pointer"
               onClick={() => (window.location.href = `/player/${player.id}`)}
             >
-              <img
+              <Image
                 src={player.photo_url}
                 alt={player.web_name}
                 className="w-16 h-20 object-fit rounded-full"
+                width={64}
+                height={80}
               />
               <div className="flex-1">
                 <h3 className="font-bold text-lg">
                   {player.first_name} {player.second_name} ({player.web_name})
                 </h3>
-                <p className="text-gray-600">Team ID: {player.team_id}</p>
                 <p className="text-gray-600">
                   Position:{" "}
                   {player.position === 1

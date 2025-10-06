@@ -2,6 +2,8 @@
 import React, { useState, useEffect } from "react";
 import { SiPremierleague } from "react-icons/si";
 import TopStatList from "../components/TopStatList";
+import { TopAssist, TopScorer } from "../../types/type";
+import Image from "next/image";
 
 type Player = {
   id: number;
@@ -18,43 +20,33 @@ type Player = {
   photo_url: string;
 };
 
+interface TopStatPlayer {
+  id: number;
+  first_name: string;
+  second_name: string;
+  web_name: string;
+  position: number;
+  photo_url: string;
+  stat_value: number;
+  stat_label: string;
+}
+
 export default function Home() {
   const [searchTerm, setSearchTerm] = useState("");
   const [players, setPlayers] = useState<Player[]>([]);
   const [loading, setLoading] = useState(false);
-  const [topScorers, setTopScorers] = useState<any[]>([]);
-  const [topAssists, setTopAssists] = useState<any[]>([]);
-  const [loadingTopScorers, setLoadingTopScorers] = useState(false);
-  const [loadingTopAssists, setLoadingTopAssists] = useState(false);
-
-  // Fetch players matching searchTerm
-  const fetchPlayers = async () => {
-    if (!searchTerm) return setPlayers([]); // clear if empty
-    setLoading(true);
-
-    try {
-      const res = await fetch(`/api/players?search=${searchTerm}`);
-      const data = await res.json();
-      setPlayers(data);
-    } catch (err) {
-      console.error("Error fetching players:", err);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const [topScorers, setTopScorers] = useState<TopScorer[]>([]);
+  const [topAssists, setTopAssists] = useState<TopAssist[]>([]);
 
   // Fetch top scorers
   useEffect(() => {
     const fetchTopScorers = async () => {
-      setLoadingTopScorers(true);
       try {
         const res = await fetch("/api/topScorers");
         const data = await res.json();
         setTopScorers(data);
       } catch (err) {
         console.error("Error fetching top scorers:", err);
-      } finally {
-        setLoadingTopScorers(false);
       }
     };
     fetchTopScorers();
@@ -62,21 +54,33 @@ export default function Home() {
 
   useEffect(() => {
     const fetchTopAssists = async () => {
-      setLoadingTopAssists(true);
       try {
         const res = await fetch("/api/topAssists");
         const data = await res.json();
         setTopAssists(data);
       } catch (err) {
         console.error("Error fetching top assists:", err);
-      } finally {
-        setLoadingTopAssists(false);
       }
     };
     fetchTopAssists();
   }, []);
 
   useEffect(() => {
+    // Fetch players matching searchTerm
+    const fetchPlayers = async () => {
+      if (!searchTerm) return setPlayers([]); // clear if empty
+      setLoading(true);
+
+      try {
+        const res = await fetch(`/api/players?search=${searchTerm}`);
+        const data = await res.json();
+        setPlayers(data);
+      } catch (err) {
+        console.error("Error fetching players:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
     const debounce = setTimeout(fetchPlayers, 300);
     return () => clearTimeout(debounce);
   }, [searchTerm]);
@@ -118,10 +122,12 @@ export default function Home() {
                 className="bg-white p-4 rounded-xl shadow-md flex items-center gap-4 hover:shadow-lg transition cursor-pointer"
                 onClick={() => (window.location.href = `/player/${player.id}`)}
               >
-                <img
+                <Image
                   src={player.photo_url}
                   alt={player.web_name}
                   className="w-16 h-20 object-fit rounded-full"
+                  width={64}
+                  height={80}
                 />
                 <div className="flex-1">
                   <h3 className="font-bold text-lg">
@@ -141,10 +147,12 @@ export default function Home() {
                       : "Forward"}
                   </p>
                 </div>
-                <img
+                <Image
                   src={player.team.logo_url}
                   alt={player.team.short_name}
                   className="w-10 h-10 object-contain"
+                  width={40}
+                  height={40}
                 />
               </li>
             ))}
@@ -158,20 +166,24 @@ export default function Home() {
         {/* Top Scorers Section */}
         <TopStatList
           title="Top Scorers"
-          players={topScorers.map((p: any) => ({
-            ...p,
-            stat_value: p.total_goals,
-            stat_label: "Goals",
-          }))}
+          players={topScorers.map(
+            (p: TopScorer): TopStatPlayer => ({
+              ...p,
+              stat_value: p.total_goals,
+              stat_label: "Goals",
+            })
+          )}
         />
         {/* Top Assists Section */}
         <TopStatList
           title="Top Assists"
-          players={topAssists.map((p: any) => ({
-            ...p,
-            stat_value: p.total_assists,
-            stat_label: "Assists",
-          }))}
+          players={topAssists.map(
+            (p: TopAssist): TopStatPlayer => ({
+              ...p,
+              stat_value: p.total_assists,
+              stat_label: "Assists",
+            })
+          )}
         />
       </main>
     </div>

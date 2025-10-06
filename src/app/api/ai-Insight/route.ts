@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { supabase } from "@/lib/supabase";
+import { PlayerHistory } from "../../../../types/type";
 
 export async function POST(req: NextRequest) {
   try {
@@ -40,7 +41,7 @@ export async function POST(req: NextRequest) {
     const recentForm = history
       ? history
           .slice(-5)
-          .map((h: any, idx: number) => {
+          .map((h: PlayerHistory) => {
             return `GW${h.fixture.gameweek}: ${h.total_points} pts, Goals: ${h.goals_scored}, Assists: ${h.assists}, CS: ${h.clean_sheets}, YC: ${h.yellow_cards}, RC: ${h.red_cards}`;
           })
           .join("\n")

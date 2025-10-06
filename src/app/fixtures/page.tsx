@@ -1,12 +1,7 @@
 "use client";
 import React from "react";
 import { Fixture } from "../../../types/type";
-
-type Team = {
-  id: number;
-  logo_url: string;
-  short_name: string;
-};
+import Image from "next/image";
 
 type GroupedFixtures = {
   gameweek: number;
@@ -99,10 +94,12 @@ const FixturesPage = () => {
                     </div>
                     <div className="flex items-center gap-2">
                       <span>{fixture.home_team.short_name}</span>
-                      <img
+                      <Image
                         className="w-8 h-8"
                         src={fixture.home_team.logo_url}
                         alt={fixture.home_team.short_name}
+                        width={32}
+                        height={32}
                       />
                       <div>
                         <span className="font-semibold text-sm">
@@ -125,10 +122,12 @@ const FixturesPage = () => {
                         </div>
                       </div>
 
-                      <img
+                      <Image
                         className="w-8 h-8"
                         src={fixture.away_team.logo_url}
                         alt={fixture.away_team.short_name}
+                        width={32}
+                        height={32}
                       />
                       <span>{fixture.away_team.short_name}</span>
                     </div>
