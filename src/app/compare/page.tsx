@@ -233,8 +233,8 @@ const Compare = () => {
                   aiData.recommendation.includes("Buy") ||
                   aiData.recommendation.includes("Hold")
                     ? "bg-green-100 text-green-700"
-                    : aiData.recommendation === "Avoid" ||
-                      aiData.recommendation === "Sell"
+                    : aiData.recommendation.includes("Avoid") ||
+                      aiData.recommendation.includes("Sell")
                     ? "bg-red-100 text-red-700"
                     : "bg-gray-100 text-gray-700"
                 }`}

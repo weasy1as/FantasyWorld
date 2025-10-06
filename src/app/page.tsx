@@ -1,6 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { SiPremierleague } from "react-icons/si";
+import TopStatList from "../components/TopStatList";
 
 type Player = {
   id: number;
@@ -21,6 +22,10 @@ export default function Home() {
   const [searchTerm, setSearchTerm] = useState("");
   const [players, setPlayers] = useState<Player[]>([]);
   const [loading, setLoading] = useState(false);
+  const [topScorers, setTopScorers] = useState<any[]>([]);
+  const [topAssists, setTopAssists] = useState<any[]>([]);
+  const [loadingTopScorers, setLoadingTopScorers] = useState(false);
+  const [loadingTopAssists, setLoadingTopAssists] = useState(false);
 
   // Fetch players matching searchTerm
   const fetchPlayers = async () => {
@@ -37,6 +42,39 @@ export default function Home() {
       setLoading(false);
     }
   };
+
+  // Fetch top scorers
+  useEffect(() => {
+    const fetchTopScorers = async () => {
+      setLoadingTopScorers(true);
+      try {
+        const res = await fetch("/api/topScorers");
+        const data = await res.json();
+        setTopScorers(data);
+      } catch (err) {
+        console.error("Error fetching top scorers:", err);
+      } finally {
+        setLoadingTopScorers(false);
+      }
+    };
+    fetchTopScorers();
+  }, []);
+
+  useEffect(() => {
+    const fetchTopAssists = async () => {
+      setLoadingTopAssists(true);
+      try {
+        const res = await fetch("/api/topAssists");
+        const data = await res.json();
+        setTopAssists(data);
+      } catch (err) {
+        console.error("Error fetching top assists:", err);
+      } finally {
+        setLoadingTopAssists(false);
+      }
+    };
+    fetchTopAssists();
+  }, []);
 
   useEffect(() => {
     const debounce = setTimeout(fetchPlayers, 300);
@@ -116,6 +154,25 @@ export default function Home() {
         {!loading && searchTerm && players.length === 0 && (
           <p className="text-center text-gray-500 mt-4">No players found.</p>
         )}
+
+        {/* Top Scorers Section */}
+        <TopStatList
+          title="Top Scorers"
+          players={topScorers.map((p: any) => ({
+            ...p,
+            stat_value: p.total_goals,
+            stat_label: "Goals",
+          }))}
+        />
+        {/* Top Assists Section */}
+        <TopStatList
+          title="Top Assists"
+          players={topAssists.map((p: any) => ({
+            ...p,
+            stat_value: p.total_assists,
+            stat_label: "Assists",
+          }))}
+        />
       </main>
     </div>
   );

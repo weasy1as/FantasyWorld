@@ -1,25 +1,11 @@
 "use client";
 import React from "react";
+import { Fixture } from "../../../types/type";
 
 type Team = {
   id: number;
   logo_url: string;
   short_name: string;
-};
-
-type Fixture = {
-  id: number;
-  gameweek: number;
-  kickoff_time: string;
-  team_h: number;
-  team_a: number;
-  team_h_score: number | null;
-  team_a_score: number | null;
-  team_h_difficulty: number;
-  team_a_difficulty: number;
-  finished: boolean;
-  home_team: Team;
-  away_team: Team;
 };
 
 type GroupedFixtures = {
